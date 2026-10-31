@@ -10,8 +10,12 @@ CAUPHUC.COM – "Cùng nhau cầu bình an – Lan tỏa lòng từ bi." Website
 
 ## Quyết định Sếp đã chốt (31/10/2026)
 
-- **Hướng MVP:** làm theo research pack. Cảnh chính điện (lấy từ ảnh thiết kế) làm trang Không gian bình an, chạy tĩnh.
-- **Màu:** theo ảnh thiết kế Sếp gửi, tông đêm – vàng kim cho cả trang: nền xanh đêm #0B1124, chữ ngà #F4EAD6, vàng kim #E8B65C để nhấn, hồng sen dùng rất ít. Sếp đổi chiều 31/10/2026, thay khung xanh lá – trắng của research pack. Bảng màu nằm trong `app/globals.css`; `tests/unit/contrast.test.ts` kiểm độ tương phản chữ.
+- **Giao diện:** giống ảnh mẫu Sếp gửi (Sếp chốt tối 31/10/2026: "thiết kế website có giao diện giống như ảnh, tương thích tốt với điện thoại, máy tính bảng và PC").
+  - Trang chủ là không gian lễ Phật: tranh chính điện, khung chọn lời nguyện, sổ lời nguyện, 4 nút Thắp hương, Dâng hoa sen, Chắp tay lễ Phật, Chọn lời nguyện, nhạc chuông.
+  - Menu chính 5 mục như ảnh: Trang chủ, Không gian lễ Phật, Lời nguyện, Về cauphuc.com, Hướng dẫn. 5 chuyên mục nội dung của pack nằm ở menu điện thoại, chân trang và cuối trang chủ.
+  - Phần trong ảnh đụng tính năng khóa thì không làm: số người đang cầu nguyện, lượt thắp hương, lời nguyện kèm tên người khác, khung ủng hộ, thẻ hồ sơ, biểu tượng mạng xã hội chưa có tài khoản.
+  - Tranh hiện do AI vẽ bằng SVG (`components/TempleScene.tsx`). Khi có tranh vẽ hoặc ảnh nền rõ nguồn thì thay, giữ các điểm neo `data-anchor` để nút vẫn chạy.
+- **Màu:** theo ảnh mẫu: tranh tông vàng rực; khung kính xanh đêm #0B1124 viền vàng; chữ ngà #F4EAD6; vàng kim #E8B65C để nhấn; ô lời nguyện và chân trang sáng, chữ xanh đêm #1D2442. Bảng màu nằm trong `app/globals.css`; `tests/unit/contrast.test.ts` kiểm độ tương phản chữ.
 - **Lời nguyện:** được lưu, nhưng chỉ trên máy người dùng. Không gửi lên mạng, không hiển thị cho người khác.
 - **Mã nguồn:** repo này (minhminhhungyen/cauphuc, riêng tư).
 

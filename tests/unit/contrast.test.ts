@@ -45,6 +45,13 @@ test("chữ trên nút vàng đọc rõ ở cả chỗ sáng nhất và tối nh
   }
 });
 
+test("chữ xanh đêm trên ô lời nguyện và chân trang sáng", () => {
+  for (const bg of ["paper", "chip"]) {
+    assert.ok(ratio(token("ink"), token(bg)) >= 7, `ink trên ${bg}: ${ratio(token("ink"), token(bg)).toFixed(2)}:1`);
+    assert.ok(ratio(token("ink-muted"), token(bg)) >= 4.5, `ink-muted trên ${bg}: ${ratio(token("ink-muted"), token(bg)).toFixed(2)}:1`);
+  }
+});
+
 test("nút tròn vàng giữa thanh lối tắt: chữ nâu trên vàng", () => {
   // Biểu tượng trên nút giữa (BottomNav) và chữ trên nút bỏ qua menu dùng on-gold trên gold.
   assert.ok(ratio(token("on-gold"), token("gold")) >= 4.5);

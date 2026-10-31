@@ -12,10 +12,6 @@ const ENTRIES: readonly { slug: string; status: string }[] = [
   { slug: "nghe-de-tam-an", status: "Âm thanh chỉ được đăng khi đã có giấy phép sử dụng rõ ràng." },
   { slug: "thien-va-tinh-tam", status: "Các bài thiền đang được soạn và sẽ có người duyệt trước khi đăng." },
   { slug: "song-tot-song-thien", status: PENDING_CONTENT },
-  {
-    slug: "khong-gian-binh-an",
-    status: "Không gian này đang được dựng. Mọi thao tác sẽ chạy ngay trên máy của bạn, không gửi dữ liệu đi đâu.",
-  },
   { slug: "gioi-thieu", status: PENDING_LEGAL },
   { slug: "lien-he", status: PENDING_LEGAL },
   { slug: "dieu-khoan", status: PENDING_LEGAL },
