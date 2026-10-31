@@ -11,7 +11,7 @@ CAUPHUC.COM – "Cùng nhau cầu bình an – Lan tỏa lòng từ bi." Website
 ## Quyết định Sếp đã chốt (31/10/2026)
 
 - **Hướng MVP:** làm theo research pack. Cảnh chính điện (lấy từ ảnh thiết kế) làm trang Không gian bình an, chạy tĩnh.
-- **Màu:** khung trang xanh lá #006B3F, #009A57, trắng #FFFFFF, nền #F6F8F7, vàng ánh kim để nhấn. Riêng cảnh lễ Phật dùng tông vàng ấm.
+- **Màu:** theo ảnh thiết kế Sếp gửi, tông đêm – vàng kim cho cả trang: nền xanh đêm #0B1124, chữ ngà #F4EAD6, vàng kim #E8B65C để nhấn, hồng sen dùng rất ít. Sếp đổi chiều 31/10/2026, thay khung xanh lá – trắng của research pack. Bảng màu nằm trong `app/globals.css`; `tests/unit/contrast.test.ts` kiểm độ tương phản chữ.
 - **Lời nguyện:** được lưu, nhưng chỉ trên máy người dùng. Không gửi lên mạng, không hiển thị cho người khác.
 - **Mã nguồn:** repo này (minhminhhungyen/cauphuc, riêng tư).
 

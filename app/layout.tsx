@@ -8,6 +8,7 @@ import "@fontsource/lora/500.css";
 import "@fontsource/lora/600.css";
 import "@fontsource/lora/700.css";
 import "./globals.css";
+import { BottomNav } from "@/components/BottomNav";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { LAUNCHED, SITE } from "@/lib/site";
@@ -24,7 +25,10 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#006b3f",
+  themeColor: "#0b1124",
+  colorScheme: "dark",
+  // Cho trang tràn tới mép máy có tai thỏ; thanh lối tắt ở đáy tự chừa vùng an toàn (env(safe-area-inset-bottom)).
+  viewportFit: "cover",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
@@ -39,6 +43,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           {children}
         </main>
         <SiteFooter />
+        <BottomNav />
       </body>
     </html>
   );

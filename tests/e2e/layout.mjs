@@ -1,21 +1,30 @@
 // Kiểm thử bố cục trên bản build tĩnh (out/): chạy sau "npm run build".
-// Kiểm ở 3 khổ màn hình 360, 768, 1280 px:
+// Kiểm ở 4 khổ màn hình 360, 768, 1024, 1280 px:
 // - mọi trang menu mở được, không tràn ngang, không lỗi console;
 // - đường dẫn lạ ra 404;
 // - menu điện thoại dùng được bằng bàn phím;
 // - link "bỏ qua menu" hoạt động;
-// - menu ngang hiện đủ 7 mục và đánh dấu trang đang xem.
+// - menu ngang hiện đủ 7 mục trên một hàng và đánh dấu trang đang xem;
+// - trang chủ có tranh chính điện, tiêu đề nằm trong màn hình đầu, 4 nghi thức;
+// - nút "Thắp sáng tâm an" (từ 640px) và thanh lối tắt ở đáy (dưới 1024px);
+// - thanh lối tắt không che chân trang;
+// - máy bật "giảm chuyển động" thì tranh đứng yên.
 // Ảnh chụp lưu ở test-results/.
 import { mkdirSync } from "node:fs";
 import { chromium } from "playwright";
 import { startServer } from "../../scripts/serve-out.mjs";
-import { INFO_LINKS, NAV } from "../../lib/site.ts";
+import { BOTTOM_NAV, HEADER_CTA, INFO_LINKS, NAV, SPACE_ACTIONS } from "../../lib/site.ts";
 
 const VIEWPORTS = [
   { name: "360", width: 360, height: 740 },
   { name: "768", width: 768, height: 1024 },
+  { name: "1024", width: 1024, height: 768 },
   { name: "1280", width: 1280, height: 800 },
 ];
+
+// Đếm phần tử trong tranh đang có chuyển động CSS.
+const countAnimated = () =>
+  [...document.querySelectorAll('[data-testid="hero-scene"] svg *')].filter((el) => getComputedStyle(el).animationName !== "none").length;
 const ROUTES = [...NAV, ...INFO_LINKS].map((item) => item.href);
 
 const failures = [];
@@ -63,6 +72,54 @@ try {
     await page.goto(url + "/", { waitUntil: "load" });
     await page.screenshot({ path: `test-results/trang-chu-${vp.name}.png`, fullPage: true });
 
+    // Trang chủ: tranh chính điện, tiêu đề trong màn hình đầu, 4 nghi thức.
+    const scene = page.locator('[data-testid="hero-scene"] svg[role="img"]');
+    check((await scene.count()) === 1, `[${vp.name}] trang chủ có tranh chính điện`);
+    const sceneLabel = (await scene.getAttribute("aria-label")) || "";
+    check(sceneLabel.length > 20, `[${vp.name}] tranh có mô tả cho trình đọc màn hình`);
+    const sceneBox = await scene.boundingBox();
+    check(sceneBox && sceneBox.width >= vp.width && sceneBox.height >= 300, `[${vp.name}] tranh phủ hết chiều ngang (${sceneBox && Math.round(sceneBox.width)}×${sceneBox && Math.round(sceneBox.height)})`);
+    // Dưới 1024px phải trừ phần thanh lối tắt (76px) che ở đáy.
+    const firstScreen = vp.height - (vp.width < 1024 ? 76 : 0);
+    const h1Box = await page.locator("h1").boundingBox();
+    check(
+      h1Box && h1Box.y + h1Box.height <= firstScreen,
+      `[${vp.name}] tiêu đề nằm trong màn hình đầu (đáy ở ${h1Box && Math.round(h1Box.y + h1Box.height)}px, giới hạn ${firstScreen}px)`,
+    );
+    const actions = await page.locator('nav[aria-label="Nghi thức ở Không gian bình an"] a').evaluateAll((links) => links.map((a) => a.getAttribute("href")));
+    check(
+      JSON.stringify(actions) === JSON.stringify(SPACE_ACTIONS.map((action) => `/khong-gian-binh-an/#${action.id}`)),
+      `[${vp.name}] 4 nghi thức dẫn đúng tới Không gian bình an (${actions.join(", ")})`,
+    );
+    check((await page.evaluate(countAnimated)) > 0, `[${vp.name}] tranh có chuyển động nhẹ khi máy không hạn chế chuyển động`);
+
+    // Nút "Thắp sáng tâm an" trên thanh đầu: hiện từ 640px (dưới 640px đã có nút giữa của thanh lối tắt).
+    const cta = page.locator('[data-testid="header-cta"]');
+    check((await cta.getAttribute("href")) === HEADER_CTA.href, `[${vp.name}] nút "${HEADER_CTA.label}" dẫn tới ${HEADER_CTA.href}`);
+    check((await cta.isVisible()) === vp.width >= 640, `[${vp.name}] nút "${HEADER_CTA.label}" ${vp.width >= 640 ? "hiện" : "ẩn"}`);
+
+    // Thanh lối tắt ở đáy: chỉ dưới 1024px, 5 mục, không che chân trang khi cuộn hết.
+    const bottomNav = page.locator('[data-testid="bottom-nav"]');
+    if (vp.width < 1024) {
+      check(await bottomNav.isVisible(), `[${vp.name}] thanh lối tắt hiện`);
+      const shortcutHrefs = await bottomNav.locator("a").evaluateAll((links) => links.map((a) => a.getAttribute("href")));
+      check(
+        JSON.stringify(shortcutHrefs) === JSON.stringify(BOTTOM_NAV.map((item) => item.href)),
+        `[${vp.name}] thanh lối tắt đủ 5 mục đúng thứ tự (${shortcutHrefs.join(", ")})`,
+      );
+      await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+      await page.waitForTimeout(100);
+      const gap = await page.evaluate(() => {
+        const footerBottom = document.querySelector("footer").getBoundingClientRect().bottom;
+        const navTop = document.querySelector('[data-testid="bottom-nav"]').getBoundingClientRect().top;
+        return Math.round(navTop - footerBottom);
+      });
+      check(gap >= 0, `[${vp.name}] thanh lối tắt không che chân trang (khoảng hở ${gap}px)`);
+      await page.evaluate(() => window.scrollTo(0, 0));
+    } else {
+      check(!(await bottomNav.isVisible()), `[${vp.name}] thanh lối tắt ẩn trên màn hình rộng`);
+    }
+
     // Link "bỏ qua menu": phím Tab đầu tiên phải vào link này, Enter đưa tiêu điểm vào nội dung chính.
     await page.keyboard.press("Tab");
     const firstFocus = await page.evaluate(() => document.activeElement && document.activeElement.textContent);
@@ -96,6 +153,11 @@ try {
       await page.waitForURL("**/goc-phat-phap/");
       await page.waitForFunction(() => !document.querySelector('[data-testid="mobile-menu"]').open);
       check(true, `[${vp.name}] chọn mục trong menu thì chuyển trang và menu tự đóng`);
+      const currentShortcut = await page.locator('[data-testid="bottom-nav"] a[aria-current="page"]').allInnerTexts();
+      check(
+        currentShortcut.length === 1 && currentShortcut[0].includes("Phật pháp"),
+        `[${vp.name}] thanh lối tắt đánh dấu mục đang xem (${currentShortcut.join(", ")})`,
+      );
     } else {
       check(!(await menu.isVisible()), `[${vp.name}] nút Menu ẩn trên màn hình rộng`);
       check(await desktopNav.isVisible(), `[${vp.name}] menu ngang hiện`);
@@ -114,6 +176,14 @@ try {
     check(errors.length === 0, `[${vp.name}] lỗi console: ${errors.length === 0 ? "không có" : errors.join(" | ")}`);
     await context.close();
   }
+
+  // Máy bật "giảm chuyển động": tranh chính điện đứng yên hoàn toàn.
+  const calm = await browser.newContext({ viewport: { width: 360, height: 740 }, reducedMotion: "reduce" });
+  const calmPage = await calm.newPage();
+  await calmPage.goto(url + "/", { waitUntil: "load" });
+  const animatedWhenReduced = await calmPage.evaluate(countAnimated);
+  check(animatedWhenReduced === 0, `[giảm chuyển động] tranh đứng yên (${animatedWhenReduced} phần tử còn chuyển động)`);
+  await calm.close();
 } finally {
   await browser.close();
   server.close();

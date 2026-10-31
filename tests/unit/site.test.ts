@@ -1,6 +1,17 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { ALL_PAGES, INFO_LINKS, NAV, OPERATOR, isActive, normalizePath, pageByHref } from "../../lib/site.ts";
+import {
+  ALL_PAGES,
+  BOTTOM_NAV,
+  HEADER_CTA,
+  INFO_LINKS,
+  NAV,
+  OPERATOR,
+  SPACE_ACTIONS,
+  isActive,
+  normalizePath,
+  pageByHref,
+} from "../../lib/site.ts";
 import { PLACEHOLDERS } from "../../lib/placeholders.ts";
 
 test("menu có đúng 7 mục, đúng thứ tự trong research pack", () => {
@@ -54,6 +65,39 @@ test("trang giữ chỗ phủ đủ 11 trang chưa làm (trừ trang chủ)", ()
   const slugs = PLACEHOLDERS.map((item) => `/${item.slug}/`);
   const expected = ALL_PAGES.map((item) => item.href).filter((href) => href !== "/");
   assert.deepEqual([...slugs].sort(), [...expected].sort());
+});
+
+test("mỗi mục menu chính có biểu tượng riêng", () => {
+  const icons = NAV.map((item) => item.icon);
+  assert.ok(icons.every(Boolean), "mục nào cũng phải có icon");
+  assert.equal(new Set(icons).size, icons.length, "không dùng trùng icon");
+});
+
+test("thanh lối tắt đáy màn hình: 5 mục, đều có trong menu, nút giữa dẫn tới Không gian bình an", () => {
+  assert.equal(BOTTOM_NAV.length, 5);
+  const navHrefs = new Set(NAV.map((item) => item.href));
+  for (const item of BOTTOM_NAV) assert.ok(navHrefs.has(item.href), `${item.href} không có trong NAV`);
+  const featured = BOTTOM_NAV.filter((item) => item.featured);
+  assert.equal(featured.length, 1);
+  assert.equal(BOTTOM_NAV.indexOf(featured[0]), 2, "nút nổi bật phải ở giữa");
+  assert.equal(featured[0].href, "/khong-gian-binh-an/");
+  // Nhãn ngắn để vừa màn hình 360px.
+  for (const item of BOTTOM_NAV) assert.ok(item.label.length <= 10, `nhãn quá dài: ${item.label}`);
+});
+
+test("nút trên thanh đầu dẫn tới một trang có trong menu", () => {
+  assert.equal(HEADER_CTA.label, "Thắp sáng tâm an");
+  assert.ok(NAV.some((item) => item.href === HEADER_CTA.href));
+});
+
+test("4 nghi thức theo ảnh thiết kế, mã neo hợp lệ và không trùng", () => {
+  assert.deepEqual(
+    SPACE_ACTIONS.map((action) => action.label),
+    ["Thắp hương", "Dâng hoa sen", "Chắp tay lễ Phật", "Lời nguyện"],
+  );
+  const ids = SPACE_ACTIONS.map((action) => action.id);
+  for (const id of ids) assert.match(id, /^[a-z]+(-[a-z]+)*$/);
+  assert.equal(new Set(ids).size, ids.length);
 });
 
 test("thông tin đơn vị vận hành đủ và đúng định dạng", () => {

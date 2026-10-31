@@ -37,18 +37,18 @@ export function MobileMenu() {
 
   return (
     <details ref={ref} className="group relative lg:hidden" data-testid="mobile-menu">
-      <summary className="flex min-h-12 cursor-pointer list-none items-center gap-2 rounded-full border border-line bg-surface px-4 font-semibold text-brand hover:border-brand [&::-webkit-details-marker]:hidden">
+      <summary className="flex min-h-12 cursor-pointer list-none items-center gap-2 rounded-full border border-line bg-night-2 px-4 font-semibold text-gold-light hover:border-gold [&::-webkit-details-marker]:hidden">
         <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
           <path className="group-open:hidden" d="M4 7h16M4 12h16M4 17h16" />
           <path className="hidden group-open:block" d="M6 6l12 12M18 6L6 18" />
         </svg>
         <span>Menu</span>
       </summary>
-      <div className="absolute right-0 z-50 mt-2 w-[min(20rem,calc(100vw-2rem))] rounded-2xl border border-line bg-surface p-2 shadow-[0_16px_40px_rgba(23,37,30,0.14)]">
+      <div className="absolute right-0 z-50 mt-2 max-h-[calc(100dvh-10rem)] w-[min(20rem,calc(100vw-2rem))] overflow-y-auto rounded-2xl border border-line bg-night-2 p-2 shadow-[0_20px_50px_rgba(0,0,0,0.55)]">
         <nav aria-label="Chuyên mục">
           <NavLinks items={NAV} variant="panel" />
         </nav>
-        <div className="mx-3 my-2 h-px bg-line" />
+        <div className="mx-3 my-2 h-px bg-line-soft" />
         <nav aria-label="Thông tin">
           <NavLinks items={INFO_LINKS} variant="panel" />
         </nav>

@@ -1,11 +1,27 @@
 // Thông tin chung của trang: menu, liên kết chân trang, đơn vị vận hành.
 // Chỉ dùng cú pháp TypeScript "xóa được" (không enum) để kiểm thử chạy thẳng bằng Node.
 
+/** Tên biểu tượng tự vẽ trong components/icons.tsx. */
+export type IconName =
+  | "home"
+  | "quote"
+  | "book"
+  | "listen"
+  | "meditate"
+  | "heart"
+  | "lotus"
+  | "incense"
+  | "hands"
+  | "wish"
+  | "menu"
+  | "close";
+
 export type NavItem = {
   href: string;
   label: string;
   /** Một câu giới thiệu mục, dùng cho trang giữ chỗ và mô tả SEO. */
   description: string;
+  icon?: IconName;
 };
 
 export const SITE = {
@@ -27,37 +43,83 @@ export const LAUNCHED = false;
 
 /** Menu chính, đúng thứ tự trong docs/research-pack/02_product/INFORMATION_ARCHITECTURE.md. */
 export const NAV: readonly NavItem[] = [
-  { href: "/", label: "Trang chủ", description: SITE.description },
+  { href: "/", label: "Trang chủ", description: SITE.description, icon: "home" },
   {
     href: "/loi-hay-moi-ngay/",
     label: "Lời hay mỗi ngày",
     description: "Mỗi ngày một câu để suy ngẫm, có ghi rõ nguồn.",
+    icon: "quote",
   },
   {
     href: "/goc-phat-phap/",
     label: "Góc Phật pháp",
     description: "Những bài nền tảng về Phật pháp ứng dụng trong đời sống hằng ngày.",
+    icon: "book",
   },
   {
     href: "/nghe-de-tam-an/",
     label: "Nghe để tâm an",
     description: "Tiếng chuông, tiếng mõ, âm thanh thiên nhiên và bài đọc để lắng tâm. Chỉ phát khi bạn bấm nghe.",
+    icon: "listen",
   },
   {
     href: "/thien-va-tinh-tam/",
     label: "Thiền và tĩnh tâm",
     description: "Bài thiền 5, 10, 15 phút có hướng dẫn thở, chuông báo đầu và cuối.",
+    icon: "meditate",
   },
   {
     href: "/song-tot-song-thien/",
     label: "Sống tốt – Sống thiện",
     description: "Câu chuyện về lòng biết ơn, sự nhẫn nhịn và lòng từ bi trong đời thường.",
+    icon: "heart",
   },
   {
     href: "/khong-gian-binh-an/",
     label: "Không gian bình an",
     description: "Một chính điện tĩnh lặng để ngồi yên vài phút và thắp nén tâm hương ngay trên máy của bạn.",
+    icon: "lotus",
   },
+];
+
+/** Nút nổi bật trên thanh đầu (theo ảnh thiết kế), dẫn tới Không gian bình an. */
+export const HEADER_CTA = { href: "/khong-gian-binh-an/", label: "Thắp sáng tâm an" } as const;
+
+export type ShortcutItem = {
+  href: string;
+  /** Nhãn ngắn, vừa thanh đáy màn hình điện thoại. */
+  label: string;
+  icon: IconName;
+  /** Nút tròn vàng ở giữa thanh. */
+  featured?: boolean;
+};
+
+/** Thanh lối tắt cố định ở đáy màn hình, chỉ hiện dưới 1024px. Mọi đường dẫn phải có trong NAV. */
+export const BOTTOM_NAV: readonly ShortcutItem[] = [
+  { href: "/", label: "Trang chủ", icon: "home" },
+  { href: "/goc-phat-phap/", label: "Phật pháp", icon: "book" },
+  { href: "/khong-gian-binh-an/", label: "Lễ Phật", icon: "lotus", featured: true },
+  { href: "/nghe-de-tam-an/", label: "Nghe", icon: "listen" },
+  { href: "/thien-va-tinh-tam/", label: "Thiền", icon: "meditate" },
+];
+
+export type SpaceAction = {
+  /** Mã neo trên trang Không gian bình an (module 6 dùng làm id của từng phần). */
+  id: string;
+  label: string;
+  icon: IconName;
+  tone: "amber" | "rose" | "sapphire" | "amethyst";
+};
+
+/**
+ * Bốn nghi thức ở Không gian bình an, theo ảnh thiết kế.
+ * Chỉ chạy trên máy người dùng: không đếm lượt, không gửi đi đâu (đếm lượt thắp hương đang khóa, xem lib/flags.ts).
+ */
+export const SPACE_ACTIONS: readonly SpaceAction[] = [
+  { id: "thap-huong", label: "Thắp hương", icon: "incense", tone: "amber" },
+  { id: "dang-hoa", label: "Dâng hoa sen", icon: "lotus", tone: "rose" },
+  { id: "le-phat", label: "Chắp tay lễ Phật", icon: "hands", tone: "sapphire" },
+  { id: "loi-nguyen", label: "Lời nguyện", icon: "wish", tone: "amethyst" },
 ];
 
 /** Liên kết thông tin ở chân trang và trong menu điện thoại. */
