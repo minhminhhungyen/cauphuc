@@ -9,6 +9,7 @@ import styles from "./TempleScene.module.css";
     (tính năng hiện người truy cập đang khóa, xem lib/flags.ts). Riêng Phật tử ở giữa (data-anchor="self")
     là "bạn": chỉ chuyển động khi chính người xem bấm nút.
   - Khi có tranh vẽ/ảnh nền rõ nguồn, thay tệp này; các điểm neo data-anchor giữ nguyên để nút vẫn chạy.
+  - Tượng Phật và hào quang mang thuộc tính data-sacred: giao diện không được che vùng này (quy tắc trong CLAUDE.md).
   Khung 1600×1000, tượng Phật ở giữa (x = 800).
 */
 
@@ -303,7 +304,8 @@ export function TempleScene({ className }: { className?: string }) {
   return (
     <svg
       viewBox="0 0 1600 1000"
-      preserveAspectRatio="xMidYMid slice"
+      // Canh mép trên: màn hình rộng chỉ cắt bớt phía dưới (hồ sen), không bao giờ cắt hào quang và tượng Phật.
+      preserveAspectRatio="xMidYMin slice"
       role="img"
       aria-label="Tranh vẽ chính điện: tượng Phật vàng lớn tỏa hào quang, điện vàng, tháp trong sương, cây hoa đào, lư hương nghi ngút khói, đèn đá, hồ sen và các Phật tử chắp tay hướng về tượng Phật."
       className={[styles.scene, className].filter(Boolean).join(" ")}
@@ -574,7 +576,8 @@ export function TempleScene({ className }: { className?: string }) {
 
       {/* Hào quang tròn sau tượng Phật */}
       <circle cx="800" cy="268" r="310" fill="url(#gs-halo-glow)" className={styles.haloGlow} />
-      <circle cx="800" cy="268" r="212" fill="url(#gs-halo)" />
+      {/* data-sacred: vùng tượng Phật và hào quang, giao diện không được che (kiểm trong tests/e2e/layout.mjs). */}
+      <circle cx="800" cy="268" r="212" fill="url(#gs-halo)" data-sacred="halo" />
       <path d={rays(800, 268, 72, 64, 206, 1.4)} fill="#fff8de" fillOpacity="0.55" className={styles.rays} />
       <g fill="none" stroke="#fffaf0" strokeOpacity="0.7">
         <circle cx="800" cy="268" r="206" strokeWidth="3" />
@@ -588,7 +591,7 @@ export function TempleScene({ className }: { className?: string }) {
       </g>
 
       {/* Tượng Phật và đài sen */}
-      <g data-anchor="buddha" className={styles.buddha}>
+      <g data-anchor="buddha" data-sacred="buddha" className={styles.buddha}>
         <g transform="translate(800 482) scale(1.24) translate(-300 -432)">
           <Buddha />
         </g>

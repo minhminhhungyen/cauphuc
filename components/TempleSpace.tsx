@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { Icon } from "@/components/icons";
 import { PrayerBookList, PrayerChips } from "@/components/prayers";
 import { sound, useSound } from "@/components/sound";
@@ -16,6 +16,8 @@ import { SPACE_ACTIONS, type Prayer, type SpaceAction } from "@/lib/site";
   - variant "immersive": trang Không gian lễ Phật, tranh toàn cảnh, chỉ giữ nút nghi thức và nhạc chuông.
   Mọi thao tác chỉ chạy trên máy người xem: không đếm lượt, không gửi gì lên mạng (lib/flags.ts).
   Hình trong tranh đổi theo các thuộc tính data-* trên khung bao (components/TempleScene.module.css).
+  Thượng tôn hình tượng Đức Phật (CLAUDE.md): không khung, nút, thông báo hay bong bóng nào được che vùng
+  data-sacred (tượng Phật, hào quang). Thông báo hiện ở dòng nhỏ dưới 4 nút, không nổi lên trên tranh.
 */
 
 type Props = {
@@ -25,7 +27,15 @@ type Props = {
   srTitle?: string;
 };
 
-type Notice = { text: string; key: number };
+/** text: câu ngắn hiện dưới 4 nút; spoken: câu đầy đủ cho trình đọc màn hình (nếu khác). */
+type Notice = { text: string; spoken?: string; key: number };
+
+/** Mép dưới vùng tượng Phật (tính theo khung tranh), để bong bóng lời nguyện không lấn lên. */
+function sacredBottom(stage: HTMLElement): number | null {
+  const parts = [...stage.querySelectorAll("[data-sacred]")].map((el) => el.getBoundingClientRect()).filter((r) => r.height > 0);
+  if (!parts.length) return null;
+  return Math.max(...parts.map((r) => r.bottom)) - stage.getBoundingClientRect().top;
+}
 
 const TONE_CLASS: Record<SpaceAction["tone"], string> = {
   amber: "medallion-amber",
@@ -55,6 +65,7 @@ export function TempleSpace({ scene, variant, srTitle }: Props) {
   const spaceRef = useRef<HTMLElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const floatRef = useRef<HTMLSpanElement>(null);
+  const bubbleRef = useRef<HTMLDivElement>(null);
   const chooserRef = useRef<HTMLElement>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
@@ -64,22 +75,36 @@ export function TempleSpace({ scene, variant, srTitle }: Props) {
   }, []);
   useEffect(() => () => timers.current.forEach(clearTimeout), []);
 
-  const say = useCallback((text: string) => setNotice({ text, key: Date.now() }), []);
+  const say = useCallback((text: string, spoken?: string) => setNotice({ text, spoken, key: Date.now() }), []);
   useEffect(() => {
     if (!notice) return;
     const timer = setTimeout(() => setNotice(null), 4500);
     return () => clearTimeout(timer);
   }, [notice]);
 
-  // Vị trí bong bóng lời nguyện: ngay trên đầu Phật tử "bạn" trong tranh.
+  // Vị trí bong bóng lời nguyện: ngay trên đầu Phật tử "bạn" trong tranh; trên máy tính không chui xuống dưới 4 nút.
   const placeBubble = useCallback(() => {
     const stage = stageRef.current;
     const self = stage?.querySelector('[data-anchor="self"]');
     if (!stage || !self) return;
     const s = stage.getBoundingClientRect();
     const r = self.getBoundingClientRect();
-    setBubblePos({ x: r.left + r.width / 2 - s.left, y: r.top - s.top });
+    let y = r.top - s.top;
+    const dock = stage.querySelector(".dock");
+    if (dock && isWide()) y = Math.min(y, dock.getBoundingClientRect().top - s.top - 6);
+    setBubblePos({ x: r.left + r.width / 2 - s.left, y });
   }, []);
+
+  // Bong bóng không được lấn lên tượng Phật: đo chiều cao thật rồi hạ xuống nếu cần (đè lên đầu "bạn" thì được).
+  useLayoutEffect(() => {
+    const el = bubbleRef.current;
+    const stage = stageRef.current;
+    if (!el || !stage || !bubblePos) return;
+    const limit = sacredBottom(stage);
+    const gap = 8; // khoảng cách bong bóng với điểm neo, bằng 0.5rem trong .self-bubble
+    const top = limit === null ? bubblePos.y : Math.max(bubblePos.y, limit + 6 + el.offsetHeight + gap);
+    el.style.top = `${top}px`;
+  }, [bubble, bubblePos]);
   useEffect(() => {
     if (!bubble) return;
     placeBubble();
@@ -163,7 +188,7 @@ export function TempleSpace({ scene, variant, srTitle }: Props) {
     setChosenId(prayer.id);
     placeBubble();
     setBubble({ text: prayer.text, key: Date.now() });
-    say(`Đã ghi lời nguyện "${prayer.text}" vào sổ trên máy của bạn`);
+    say("Đã ghi lời nguyện vào sổ trên máy bạn", `Đã ghi lời nguyện "${prayer.text}" vào sổ trên máy của bạn`);
     if (dialogRef.current?.open) dialogRef.current.close();
   };
 
@@ -199,12 +224,6 @@ export function TempleSpace({ scene, variant, srTitle }: Props) {
       <div ref={stageRef} className="space-stage" data-testid="hero-scene">
         <div className="space-art">{scene}</div>
 
-        {variant === "home" ? (
-          <div className="facts-mobile glass" aria-hidden="true">
-            <Facts />
-          </div>
-        ) : null}
-
         <div className="side-tools">
           {soundButton}
           {fullscreen.supported ? (
@@ -218,7 +237,13 @@ export function TempleSpace({ scene, variant, srTitle }: Props) {
         </div>
 
         {bubble && bubblePos ? (
-          <div key={`bubble-${bubble.key}`} className="self-bubble" style={{ left: bubblePos.x, top: bubblePos.y }} data-testid="self-bubble">
+          <div
+            key={`bubble-${bubble.key}`}
+            ref={bubbleRef}
+            className="self-bubble"
+            style={{ left: bubblePos.x, top: bubblePos.y }}
+            data-testid="self-bubble"
+          >
             <span className="self-bubble-text">{bubble.text}</span>
             <span className="self-bubble-name">Bạn</span>
           </div>
@@ -226,13 +251,6 @@ export function TempleSpace({ scene, variant, srTitle }: Props) {
         <span ref={floatRef} className="float-lotus" aria-hidden="true">
           <Icon name="lotus" className="h-9 w-9" />
         </span>
-
-        {notice ? (
-          <p key={`toast-${notice.key}`} className="toast" aria-hidden="true">
-            <Icon name="check" className="h-4 w-4 shrink-0" />
-            {notice.text}
-          </p>
-        ) : null}
 
         <div className="dock-wrap">
           <div className="dock glass">
@@ -259,7 +277,20 @@ export function TempleSpace({ scene, variant, srTitle }: Props) {
               ))}
             </ul>
           </div>
-          <p className="dock-note">Tất cả tính năng đều miễn phí • Cùng nhau giữ tâm an lành</p>
+          {/* Dòng trạng thái dưới 4 nút: thay cho thông báo nổi (thông báo nổi từng che hào quang tượng Phật). */}
+          <p className={notice ? "dock-note dock-note-active" : "dock-note"} data-testid="space-status">
+            {notice ? (
+              <span key={`note-${notice.key}`} className="dock-note-msg">
+                <Icon name="check" className="h-4 w-4 shrink-0" />
+                {notice.text}
+              </span>
+            ) : (
+              <>
+                <span className="lg:hidden">Miễn phí • Lời nguyện chỉ lưu trên máy bạn</span>
+                <span className="hidden lg:inline">Tất cả tính năng đều miễn phí • Cùng nhau giữ tâm an lành</span>
+              </>
+            )}
+          </p>
         </div>
       </div>
 
@@ -342,7 +373,7 @@ export function TempleSpace({ scene, variant, srTitle }: Props) {
       )}
 
       <p className="sr-only" aria-live="polite">
-        {notice?.text ?? ""}
+        {notice ? (notice.spoken ?? notice.text) : ""}
       </p>
     </section>
   );
