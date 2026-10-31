@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { NAV } from "@/lib/site";
+import { PRIMARY_NAV, SECTIONS } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Không tìm thấy trang",
 };
 
 export default function NotFound() {
-  const sections = NAV.filter((item) => item.href !== "/");
+  const sections = [...PRIMARY_NAV.filter((item) => item.href !== "/"), ...SECTIONS];
   return (
     <div className="relative overflow-hidden">
       <div

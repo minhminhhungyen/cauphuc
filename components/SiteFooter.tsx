@@ -1,56 +1,52 @@
 import Link from "next/link";
 import { LotusMark } from "@/components/LotusMark";
-import { INDEPENDENCE_NOTE, INFO_LINKS, NAV, OPERATOR, SITE } from "@/lib/site";
+import { INDEPENDENCE_NOTE, INFO_LINKS, OPERATOR, SECTIONS, SITE } from "@/lib/site";
 
 const BUILD_YEAR = new Date().getFullYear();
 
+// Chân trang sáng như ảnh mẫu. Không đặt biểu tượng YouTube, Facebook, TikTok vì chưa có tài khoản thật.
+// Thông tin đơn vị vận hành phải có ở mọi trang (CLAUDE.md).
 export function SiteFooter() {
-  const sections = NAV.filter((item) => item.href !== "/");
   return (
-    <footer className="mt-20 bg-[#080d1c]">
-      <div className="h-px bg-[linear-gradient(90deg,transparent,var(--color-gold),transparent)]" aria-hidden="true" />
-      <p className="pt-8 text-center font-serif text-lg font-medium tracking-wide text-gold">Nam mô A Di Đà Phật</p>
-      <div className="wrap grid gap-10 py-10 md:grid-cols-[1.4fr_1fr_1fr]">
-        <div className="max-w-md">
-          <Link href="/" className="inline-flex items-center gap-3 rounded-lg">
-            <LotusMark className="h-10 w-10 shrink-0" />
-            <span className="font-serif text-xl font-semibold text-gold-light">{SITE.name}</span>
-          </Link>
-          <p className="mt-4 font-serif text-lg leading-snug text-ivory">{SITE.slogan}</p>
-          <p className="mt-3 text-[0.95rem] leading-relaxed text-mist">{INDEPENDENCE_NOTE}</p>
-        </div>
-        <nav aria-label="Chuyên mục ở chân trang">
-          <h2 className="text-lg font-semibold text-gold-light">Chuyên mục</h2>
-          <ul className="mt-3 grid gap-1">
-            {sections.map((item) => (
-              <li key={item.href}>
-                <Link href={item.href} className="inline-flex min-h-10 items-center rounded-md text-ivory underline-offset-4 hover:text-gold-light hover:underline">
-                  {item.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
+    <footer className="site-footer">
+      <div className="wrap-wide flex flex-col gap-4 py-5 lg:flex-row lg:items-center lg:justify-between">
+        <Link href="/" className="inline-flex shrink-0 items-center gap-2.5 rounded-lg">
+          <LotusMark className="h-11 w-11 shrink-0" />
+          <span>
+            <span className="block font-serif text-[1.3rem] font-semibold leading-tight text-ink">{SITE.name}</span>
+            <span className="block text-[0.85rem] leading-snug text-ink-muted">{SITE.tagline}</span>
+          </span>
+        </Link>
         <nav aria-label="Thông tin">
-          <h2 className="text-lg font-semibold text-gold-light">Thông tin</h2>
-          <ul className="mt-3 grid gap-1">
+          <ul className="footer-links">
             {INFO_LINKS.map((item) => (
               <li key={item.href}>
-                <Link href={item.href} className="inline-flex min-h-10 items-center rounded-md text-ivory underline-offset-4 hover:text-gold-light hover:underline">
+                <Link href={item.href} className="footer-link">
                   {item.label}
                 </Link>
               </li>
             ))}
           </ul>
         </nav>
+        <p className="shrink-0 font-serif text-[1.05rem] font-medium text-ink">
+          Nam mô A Di Đà Phật <span aria-hidden="true">🙏</span>
+        </p>
       </div>
-      <div className="border-t border-line-soft">
-        <div className="wrap flex flex-col gap-1 py-5 text-sm text-mist md:flex-row md:items-center md:justify-between">
+      <div className="border-t border-ink/10">
+        <div className="wrap-wide grid gap-1.5 py-4 text-[0.82rem] leading-relaxed text-ink-muted">
+          <nav aria-label="Chuyên mục ở chân trang">
+            <ul className="flex flex-wrap gap-x-4 gap-y-1">
+              {SECTIONS.map((item) => (
+                <li key={item.href}>
+                  <Link href={item.href} className="footer-link">
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
           <p>
-            Đơn vị vận hành: {OPERATOR.name}, mã số thuế {OPERATOR.taxCode}
-          </p>
-          <p>
-            © {BUILD_YEAR} {SITE.name}
+            {INDEPENDENCE_NOTE} Đơn vị vận hành: {OPERATOR.name}, mã số thuế {OPERATOR.taxCode}. © {BUILD_YEAR} {SITE.name}
           </p>
         </div>
       </div>

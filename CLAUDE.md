@@ -10,8 +10,12 @@ CAUPHUC.COM – "Cùng nhau cầu bình an – Lan tỏa lòng từ bi." Website
 
 ## Quyết định Sếp đã chốt (31/10/2026)
 
-- **Hướng MVP:** làm theo research pack. Cảnh chính điện (lấy từ ảnh thiết kế) làm trang Không gian bình an, chạy tĩnh.
-- **Màu:** theo ảnh thiết kế Sếp gửi, tông đêm – vàng kim cho cả trang: nền xanh đêm #0B1124, chữ ngà #F4EAD6, vàng kim #E8B65C để nhấn, hồng sen dùng rất ít. Sếp đổi chiều 31/10/2026, thay khung xanh lá – trắng của research pack. Bảng màu nằm trong `app/globals.css`; `tests/unit/contrast.test.ts` kiểm độ tương phản chữ.
+- **Giao diện:** giống ảnh mẫu Sếp gửi (Sếp chốt tối 31/10/2026: "thiết kế website có giao diện giống như ảnh, tương thích tốt với điện thoại, máy tính bảng và PC").
+  - Trang chủ là không gian lễ Phật: tranh chính điện, khung chọn lời nguyện, sổ lời nguyện, 4 nút Thắp hương, Dâng hoa sen, Chắp tay lễ Phật, Chọn lời nguyện, nhạc chuông.
+  - Menu chính 5 mục như ảnh: Trang chủ, Không gian lễ Phật, Lời nguyện, Về cauphuc.com, Hướng dẫn. 5 chuyên mục nội dung của pack nằm ở menu điện thoại, chân trang và cuối trang chủ.
+  - Phần trong ảnh đụng tính năng khóa thì không làm: số người đang cầu nguyện, lượt thắp hương, lời nguyện kèm tên người khác, khung ủng hộ, thẻ hồ sơ, biểu tượng mạng xã hội chưa có tài khoản.
+  - Tranh hiện do AI vẽ bằng SVG (`components/TempleScene.tsx`). Khi có tranh vẽ hoặc ảnh nền rõ nguồn thì thay, giữ các điểm neo `data-anchor` để nút vẫn chạy.
+- **Màu:** theo ảnh mẫu: tranh tông vàng rực; khung kính xanh đêm #0B1124 viền vàng; chữ ngà #F4EAD6; vàng kim #E8B65C để nhấn; ô lời nguyện và chân trang sáng, chữ xanh đêm #1D2442. Bảng màu nằm trong `app/globals.css`; `tests/unit/contrast.test.ts` kiểm độ tương phản chữ.
 - **Lời nguyện:** được lưu, nhưng chỉ trên máy người dùng. Không gửi lên mạng, không hiển thị cho người khác.
 - **Mã nguồn:** repo này (minhminhhungyen/cauphuc, riêng tư).
 
@@ -52,6 +56,34 @@ Không thêm backend, cơ sở dữ liệu, realtime hay dịch vụ trả phí.
 - Mỗi trích dẫn ghi rõ kinh, phẩm, câu và bản dịch. Phân biệt rõ trích dẫn, diễn giải và nội dung tự biên soạn.
 - Không hứa hẹn linh ứng, chữa bệnh, giải hạn, đổi vận. Không kích động sợ hãi để kêu gọi đóng góp.
 - AI chỉ soạn bản nháp. Bài chỉ được xuất bản khi người duyệt đã duyệt.
+
+## Hình ảnh nhân vật
+
+Sếp yêu cầu ngày 31/10/2026: "Tất cả các nhân vật trong website phải thật đẹp, thượng tôn tinh thần Phật giáo."
+
+- **Đức Phật:**
+  - Trang nghiêm, đúng hình tướng truyền thống:
+    - nét mặt từ bi, mắt khép hờ;
+    - nhục kế, tóc xoắn ốc, tai dài;
+    - y vắt vai trái hoặc phủ hai vai;
+    - ngồi kiết già trên tòa sen, tay kết ấn đúng truyền thống (ví dụ ấn thiền định).
+  - Không vẽ Đức Phật kiểu chibi, hoạt hình hay biếm họa. Không dùng ảnh méo mặt, sai tay. Không cắt ngang đầu hay hào quang.
+  - Đặt ở chỗ cao nhất, chính giữa tranh.
+  - Khung, nút, thông báo, bong bóng lời nguyện không được che tượng Phật và hào quang:
+    - phần này đánh dấu `data-sacred`;
+    - `tests/e2e/layout.mjs` kiểm ở mọi khổ màn hình;
+    - thông báo khi bấm nút hiện ở dòng nhỏ dưới 4 nút, không nổi lên trên tranh.
+  - Không dùng hình Đức Phật làm biểu tượng, nút bấm, hình trang trí chân trang, quảng cáo hay ảnh vui.
+  - Hiệu ứng khi bấm nút chỉ là ánh sáng, khói hương, hoa sen, tiếng chuông. Không làm tượng Phật chuyển động, biến dạng hay đổi nét mặt.
+- **Phật tử (nhân vật chibi):**
+  - Đẹp, hiền, đoan trang. Mặc áo tràng hoặc áo màu nhã, kín đáo.
+  - Tư thế cung kính: chắp tay, quỳ lạy hoặc đứng nghiêm, hướng về Đức Phật.
+  - Không có hào quang, tòa sen hay vầng sáng sau đầu. Những thứ đó chỉ dành cho Đức Phật, Bồ Tát.
+  - Không vẽ người thật, tu sĩ có thật hay nhân vật có bản quyền.
+- **Ảnh do AI tạo:**
+  - Người duyệt soi bản gốc trước khi dùng, nhất là mặt và tay tượng Phật. Có lỗi thì không dùng.
+  - Ghi "ảnh do AI tạo" trong `data/ASSET_LICENSE_REGISTER.csv` và trang Bản quyền.
+  - Giữ nguyên tệp xuất từ công cụ tạo ảnh, không xóa dữ liệu nguồn gốc (C2PA) trong tệp.
 
 ## Tài nguyên (ảnh, audio, phông chữ, icon)
 

@@ -66,15 +66,65 @@ const PATHS: Record<IconName, ReactNode> = {
       <path d="M9 20.5h6" />
     </>
   ),
-  // Đèn hoa đăng: ngọn lửa trên đài sen, dùng cho lời nguyện.
-  wish: (
+  // Ngôi chùa hai tầng mái.
+  temple: (
     <>
-      <path d="M12 3.5c1.6 1.8 2.2 3.4 1.5 4.8-.4.9-1 1.3-1.5 1.3s-1.1-.4-1.5-1.3c-.7-1.4-.1-3 1.5-4.8z" />
-      <path d="M12 19c-3.3-.1-6-1.6-7.5-4.2 2.6-.4 5.2.4 7.5 2.6 2.3-2.2 4.9-3 7.5-2.6C18 17.4 15.3 18.9 12 19z" />
-      <path d="M12 17.2c-1.3-1.5-1.7-3.1-.9-4.9h1.8c.8 1.8.4 3.4-.9 4.9z" />
-      <path d="M5 21.5h14" />
+      <path d="M3.5 9.5c1 .3 1.8.1 2.4-.5L12 4.5 18.1 9c.6.6 1.4.8 2.4.5" />
+      <path d="M5 13.5c.9.2 1.6 0 2.1-.5h9.8c.5.5 1.2.7 2.1.5" />
+      <path d="M7 10v3M17 10v3M6.5 13v7h11v-7" />
+      <path d="M10.3 20v-4h3.4v4M4 20h16" />
     </>
   ),
+  // Bong bóng lời nói có ba chấm.
+  bubble: (
+    <>
+      <path d="M12 4.5c4.6 0 8 2.9 8 6.5s-3.4 6.5-8 6.5c-1 0-1.9-.1-2.8-.4L5.5 19.5l1-3.4C5 14.9 4 13.1 4 11c0-3.6 3.4-6.5 8-6.5z" />
+      <path d="M8.6 11h.01M12 11h.01M15.4 11h.01" strokeWidth="2.4" />
+    </>
+  ),
+  info: (
+    <>
+      <circle cx="12" cy="12" r="8.5" />
+      <path d="M12 11v5.5M12 7.8h.01" strokeWidth="2" />
+    </>
+  ),
+  // Trang sách có dòng chữ.
+  guide: (
+    <>
+      <path d="M6.5 3.5h8l3 3v14h-11z" />
+      <path d="M14.5 3.5v3h3M9 10.5h6M9 13.5h6M9 16.5h4" />
+    </>
+  ),
+  shield: (
+    <>
+      <path d="M12 3.5l7 2.6v5.4c0 4.3-2.9 7.6-7 9-4.1-1.4-7-4.7-7-9V6.1z" />
+      <path d="M9 12l2.2 2.2L15.5 10" />
+    </>
+  ),
+  music: (
+    <>
+      <path d="M9 17.5V6.2l10-2.2v11.3" />
+      <circle cx="6.8" cy="17.5" r="2.3" />
+      <circle cx="16.8" cy="15.3" r="2.3" />
+    </>
+  ),
+  fullscreen: <path d="M4 9V4.5h4.5M15.5 4.5H20V9M20 15v4.5h-4.5M8.5 19.5H4V15" />,
+  volume: (
+    <>
+      <path d="M4.5 9.5h3l4.5-4v13l-4.5-4h-3z" />
+      <path d="M15.5 9a4.5 4.5 0 0 1 0 6M18 6.5a8 8 0 0 1 0 11" />
+    </>
+  ),
+  mute: (
+    <>
+      <path d="M4.5 9.5h3l4.5-4v13l-4.5-4h-3z" />
+      <path d="M16 9.5l5 5M21 9.5l-5 5" />
+    </>
+  ),
+  play: <path d="M8 5.5v13l10.5-6.5z" />,
+  pause: <path d="M8.5 5.5v13M15.5 5.5v13" strokeWidth="2.4" />,
+  check: <path d="M5 12.5l4.5 4.5L19 7.5" strokeWidth="2.2" />,
+  chevron: <path d="M9.5 6l6 6-6 6" />,
   menu: <path d="M4 7h16M4 12h16M4 17h16" />,
   close: <path d="M6 6l12 12M18 6L6 18" />,
 };

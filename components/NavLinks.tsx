@@ -10,28 +10,20 @@ type Props = {
   variant: "bar" | "panel";
 };
 
-// Danh sách liên kết menu; mục đang xem có aria-current="page", chữ vàng sáng và gạch chân vàng.
+// Danh sách liên kết menu; mục đang xem có aria-current="page".
+// "bar": thẻ tròn trên thanh đầu như ảnh mẫu (mục đang xem có viền vàng). "panel": danh sách trong menu điện thoại.
 export function NavLinks({ items, variant }: Props) {
   const pathname = usePathname();
 
   if (variant === "bar") {
     return (
-      <ul className="flex flex-wrap items-center justify-center gap-x-0.5 gap-y-1">
+      <ul className="flex items-center gap-1 xl:gap-1.5">
         {items.map((item) => {
           const active = isActive(pathname, item.href);
           return (
             <li key={item.href}>
-              <Link
-                href={item.href}
-                aria-current={active ? "page" : undefined}
-                className={[
-                  // 1024–1279px: chữ và lề nhỏ hơn một chút để 7 mục nằm trên một hàng.
-                  "relative inline-flex min-h-12 items-center rounded-md px-2 text-[0.9rem] font-medium whitespace-nowrap transition-colors xl:px-3 xl:text-[0.95rem]",
-                  active ? "text-gold-light" : "text-mist hover:text-gold-light",
-                  "after:absolute after:inset-x-2 after:bottom-1.5 after:h-0.5 after:rounded-full xl:after:inset-x-3",
-                  active ? "after:bg-gold" : "after:bg-transparent",
-                ].join(" ")}
-              >
+              <Link href={item.href} aria-current={active ? "page" : undefined} className="tab">
+                {item.icon ? <Icon name={item.icon} className="tab-icon" /> : null}
                 {item.label}
               </Link>
             </li>
