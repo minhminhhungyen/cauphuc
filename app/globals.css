@@ -1,0 +1,134 @@
+@import "tailwindcss";
+
+/*
+  Màu theo research pack: xanh #006B3F, #009A57, trắng, nền #F6F8F7, vàng ánh kim để nhấn.
+  Độ tương phản đã tính:
+  - chữ trắng trên #006B3F: 6,5:1;
+  - #009A57 trên trắng chỉ 3,6:1, nên chỉ dùng cho chữ to hoặc chi tiết trang trí;
+  - vàng #B8903A trên trắng chỉ 3:1, nên chỉ dùng trang trí, không dùng cho chữ.
+*/
+@theme {
+  --color-brand: #006b3f;
+  --color-brand-2: #009a57;
+  --color-brand-deep: #00502f;
+  --color-canvas: #f6f8f7;
+  --color-surface: #ffffff;
+  --color-ink: #17251e;
+  --color-ink-muted: #4c5c54;
+  --color-line: #dbe4df;
+  --color-gold: #b8903a;
+  --color-gold-soft: #e9d7a6;
+  --color-on-brand: #ffffff;
+
+  --font-sans: "Be Vietnam Pro", ui-sans-serif, system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-serif: "Lora", Georgia, "Times New Roman", serif;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    color-scheme: light;
+  }
+
+  body {
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-serif);
+    text-wrap: balance;
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--color-brand-2);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+
+  ::selection {
+    background-color: var(--color-gold-soft);
+    color: var(--color-ink);
+  }
+}
+
+@layer components {
+  /* Khung nội dung: rộng tối đa 72rem, lề hai bên ít nhất 16px. */
+  .wrap {
+    width: 100%;
+    max-width: 72rem;
+    margin-inline: auto;
+    padding-inline: 1rem;
+  }
+
+  @media (min-width: 40rem) {
+    .wrap {
+      padding-inline: 1.5rem;
+    }
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 3rem;
+    padding: 0.75rem 1.4rem;
+    border-radius: 999px;
+    font-weight: 600;
+    line-height: 1.2;
+    text-decoration: none;
+    transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  }
+
+  .btn-primary {
+    background-color: var(--color-brand);
+    color: var(--color-on-brand);
+  }
+
+  .btn-primary:hover {
+    background-color: var(--color-brand-deep);
+  }
+
+  .btn-secondary {
+    border: 1.5px solid var(--color-brand);
+    color: var(--color-brand);
+    background-color: var(--color-surface);
+  }
+
+  .btn-secondary:hover {
+    background-color: var(--color-canvas);
+  }
+
+  .skip-link {
+    position: absolute;
+    left: 1rem;
+    top: -10rem;
+    z-index: 60;
+    padding: 0.6rem 1rem;
+    border-radius: 0.75rem;
+    background-color: var(--color-brand);
+    color: var(--color-on-brand);
+    font-weight: 600;
+  }
+
+  .skip-link:focus {
+    top: 0.75rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
