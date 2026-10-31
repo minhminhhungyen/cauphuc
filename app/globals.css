@@ -1,0 +1,305 @@
+@import "tailwindcss";
+
+/*
+  Tông đêm – vàng kim theo ảnh thiết kế Sếp gửi (Sếp đổi ngày 31/10/2026, thay khung xanh–trắng).
+  Nền xanh đêm, chữ ngà, vàng kim để nhấn, hồng sen dùng rất ít. Đỏ son chỉ có trong tranh chính điện.
+  Độ tương phản (tính theo WCAG, kiểm tự động trong tests/unit/contrast.test.ts):
+  - chữ ngà #F4EAD6 trên nền #0B1124: 15,7:1;
+  - chữ phụ #C3B9A5 trên #0B1124: 9,6:1; trên khối nổi #121A35: 8,8:1;
+  - vàng #E8B65C trên #0B1124: 10,1:1 (dùng được cho chữ);
+  - chữ nâu #2A1906 trên nút vàng (chỗ tối nhất #C9913A): 6,1:1.
+*/
+@theme {
+  --color-night: #0b1124;
+  --color-night-2: #121a35;
+  --color-night-3: #1b2548;
+  --color-ivory: #f4ead6;
+  --color-mist: #c3b9a5;
+  --color-gold: #e8b65c;
+  --color-gold-light: #f6d58e;
+  --color-gold-deep: #a8742a;
+  --color-lotus: #f0a3c0;
+  --color-on-gold: #2a1906;
+  --color-line: rgb(232 182 92 / 0.32);
+  --color-line-soft: rgb(232 182 92 / 0.16);
+
+  --font-sans: "Be Vietnam Pro", ui-sans-serif, system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-serif: "Lora", Georgia, "Times New Roman", serif;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    color-scheme: dark;
+    background-color: var(--color-night);
+  }
+
+  body {
+    background-color: var(--color-night);
+    color: var(--color-ivory);
+    font-family: var(--font-sans);
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Dưới 1024px có thanh lối tắt cố định ở đáy màn hình (cao 4.75rem + 1px viền trên): chừa chỗ để chân trang không bị che. */
+  @media (max-width: 63.999rem) {
+    body {
+      padding-bottom: calc(4.75rem + 1px + env(safe-area-inset-bottom));
+    }
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-serif);
+    text-wrap: balance;
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--color-gold-light);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+
+  ::selection {
+    background-color: var(--color-gold);
+    color: var(--color-on-gold);
+  }
+}
+
+@layer components {
+  /* Khung nội dung: rộng tối đa 72rem, lề hai bên ít nhất 16px. */
+  /* Máy có tai thỏ nằm ngang: lề không nhỏ hơn vùng an toàn (layout bật viewportFit: cover). */
+  .wrap {
+    width: 100%;
+    max-width: 72rem;
+    margin-inline: auto;
+    padding-inline: max(1rem, env(safe-area-inset-left)) max(1rem, env(safe-area-inset-right));
+  }
+
+  @media (min-width: 40rem) {
+    .wrap {
+      padding-inline: max(1.5rem, env(safe-area-inset-left)) max(1.5rem, env(safe-area-inset-right));
+    }
+  }
+
+  /* Chữ thếp vàng cho tiêu đề lớn. Chế độ tương phản cao của hệ điều hành thì về chữ thường. */
+  .gold-text {
+    color: var(--color-gold-light);
+    background-image: linear-gradient(180deg, #fbe8b4 0%, #f2c873 52%, #d49a3f 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  @media (forced-colors: active) {
+    .gold-text {
+      background-image: none;
+      -webkit-text-fill-color: currentColor;
+    }
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 3rem;
+    padding: 0.75rem 1.4rem;
+    border-radius: 999px;
+    font-weight: 600;
+    line-height: 1.2;
+    text-decoration: none;
+    transition: filter 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  }
+
+  .btn-primary {
+    background-image: linear-gradient(180deg, #f9df9e 0%, #ebbb62 55%, #c9913a 100%);
+    color: var(--color-on-gold);
+    box-shadow:
+      inset 0 0 0 1px rgb(255 240 200 / 0.4),
+      0 10px 28px -12px rgb(232 182 92 / 0.65);
+  }
+
+  .btn-primary:hover {
+    filter: brightness(1.07);
+  }
+
+  .btn-secondary {
+    border: 1.5px solid var(--color-line);
+    background-color: rgb(11 17 36 / 0.45);
+    color: var(--color-gold-light);
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--color-gold);
+    background-color: rgb(232 182 92 / 0.1);
+  }
+
+  /* Khung "hoành phi": viền vàng đôi như bức hoành sơn son thếp vàng trong chùa. */
+  .tablet {
+    position: relative;
+    border-radius: 0.6rem;
+    border: 1px solid var(--color-line);
+    background-image: linear-gradient(180deg, rgb(27 37 72 / 0.7), rgb(18 26 53 / 0.92));
+    box-shadow:
+      inset 0 0 0 4px rgb(11 17 36 / 0.55),
+      inset 0 0 0 5px var(--color-line-soft);
+  }
+
+  .skip-link {
+    position: absolute;
+    left: 1rem;
+    top: -10rem;
+    z-index: 60;
+    padding: 0.6rem 1rem;
+    border-radius: 0.75rem;
+    background-color: var(--color-gold);
+    color: var(--color-on-gold);
+    font-weight: 600;
+  }
+
+  .skip-link:focus {
+    top: 0.75rem;
+  }
+
+  /*
+    Đầu trang chủ. Tranh chính điện khung 2000×900, chính điện ở 62% chiều ngang.
+    Dưới 1024px: tranh là một khối riêng, chính điện ở giữa màn hình, chữ nằm dưới tranh.
+    Từ 1024px: tranh phủ cả khối, chữ đặt trong khung bên trái.
+  */
+  .hero {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .hero-scene {
+    --scene-h: clamp(380px, 112vw, 540px);
+    --scene-w: calc(var(--scene-h) * 20 / 9);
+    position: relative;
+    height: var(--scene-h);
+    overflow: hidden;
+  }
+
+  .hero-scene > svg {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: var(--scene-w);
+    /* Đưa chính điện (62%) vào giữa, nhưng không để hở mép phải hoặc mép trái. */
+    left: clamp(calc(100% - var(--scene-w)), calc(50% - var(--scene-w) * 0.62), 0px);
+  }
+
+  .hero-scene::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 32%;
+    background-image: linear-gradient(to bottom, rgb(11 17 36 / 0), var(--color-night));
+    pointer-events: none;
+  }
+
+  .hero-panel {
+    position: relative;
+    margin-top: -2.5rem;
+  }
+
+  @media (min-width: 64rem) {
+    .hero {
+      display: flex;
+      align-items: center;
+      min-height: clamp(560px, calc(100svh - 9rem), 760px);
+    }
+
+    .hero-scene {
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      height: auto;
+    }
+
+    .hero-scene > svg {
+      left: 0;
+      width: 100%;
+    }
+
+    .hero-scene::after {
+      inset: 0;
+      height: auto;
+      background-image:
+        linear-gradient(90deg, rgb(11 17 36 / 0.82) 0%, rgb(11 17 36 / 0.45) 34%, rgb(11 17 36 / 0) 55%),
+        linear-gradient(to bottom, rgb(11 17 36 / 0) 78%, var(--color-night) 100%);
+    }
+
+    .hero-panel {
+      margin-top: 0;
+      max-width: min(30rem, 43vw);
+      padding: 2rem 2rem 2.25rem;
+      border-radius: 1rem;
+      border: 1px solid var(--color-line-soft);
+      background-color: rgb(11 17 36 / 0.5);
+      backdrop-filter: blur(6px);
+    }
+  }
+
+  /* Huy hiệu tròn của 4 nghi thức: mỗi nghi thức một màu, viền vàng mảnh. */
+  .medallion {
+    display: grid;
+    place-items: center;
+    width: 3.75rem;
+    height: 3.75rem;
+    border-radius: 999px;
+    color: #fffaf0;
+    box-shadow:
+      inset 0 0 0 1.5px rgb(255 236 190 / 0.55),
+      inset 0 -10px 18px rgb(0 0 0 / 0.25),
+      0 10px 26px -10px var(--glow, rgb(232 182 92 / 0.6));
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  @media (min-width: 40rem) {
+    .medallion {
+      width: 4.5rem;
+      height: 4.5rem;
+    }
+  }
+
+  .medallion-amber {
+    background-image: radial-gradient(circle at 35% 30%, #fbd889, #d99a3c 55%, #8f5418);
+    --glow: rgb(232 170 80 / 0.7);
+  }
+
+  .medallion-rose {
+    background-image: radial-gradient(circle at 35% 30%, #fbc3d4, #df7d9f 55%, #8e3558);
+    --glow: rgb(240 140 175 / 0.6);
+  }
+
+  .medallion-sapphire {
+    background-image: radial-gradient(circle at 35% 30%, #a9c2f5, #5b82d6 55%, #233f8c);
+    --glow: rgb(110 150 235 / 0.6);
+  }
+
+  .medallion-amethyst {
+    background-image: radial-gradient(circle at 35% 30%, #d3c0f6, #9473d8 55%, #4a2d8a);
+    --glow: rgb(160 125 230 / 0.6);
+  }
+
+  .group:hover .medallion,
+  .group:focus-visible .medallion {
+    transform: translateY(-2px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}

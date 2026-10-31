@@ -1,0 +1,176 @@
+/* Chuyển động nhẹ của tranh chính điện. Tắt hết khi máy bật "giảm chuyển động". */
+
+.scene {
+  display: block;
+}
+
+.twinkle {
+  animation: twinkle 4.8s ease-in-out infinite alternate;
+}
+
+@keyframes twinkle {
+  from {
+    opacity: 0.2;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Đèn lồng đung đưa quanh móc treo. */
+.sway {
+  transform-box: fill-box;
+  transform-origin: 50% 0;
+  animation: sway 6.5s ease-in-out infinite alternate;
+}
+
+@keyframes sway {
+  from {
+    transform: rotate(-2.2deg);
+  }
+  to {
+    transform: rotate(2.2deg);
+  }
+}
+
+/* Khói trầm: các đoạn nét chạy dọc đường khói từ dưới lên. */
+.smoke {
+  stroke-dasharray: 70 150;
+  animation: smoke 8s linear infinite;
+}
+
+@keyframes smoke {
+  from {
+    stroke-dashoffset: 0;
+  }
+  to {
+    stroke-dashoffset: -440;
+  }
+}
+
+/* Hào quang xoay rất chậm. */
+.rays {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  animation: spin 160s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Đốm sáng bay lên rồi tan. */
+.mote {
+  opacity: 0;
+  animation: mote 10s ease-in-out infinite;
+}
+
+@keyframes mote {
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  25% {
+    opacity: 0.85;
+  }
+  100% {
+    transform: translateY(-120px);
+    opacity: 0;
+  }
+}
+
+/* Ngọn nến, đèn đá lập lòe. */
+.flicker {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: flicker 1.7s ease-in-out infinite alternate;
+}
+
+@keyframes flicker {
+  0% {
+    transform: scale(1, 1);
+  }
+  50% {
+    transform: scale(0.9, 1.1);
+  }
+  100% {
+    transform: scale(1.05, 0.94);
+  }
+}
+
+.glow {
+  animation: glow 3.6s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+  from {
+    opacity: 0.65;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Bóng sáng lăn tăn trên mặt hồ. */
+.shimmer {
+  animation: shimmer 5s ease-in-out infinite alternate;
+}
+
+@keyframes shimmer {
+  from {
+    opacity: 0.35;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Mây trôi qua trăng. */
+.drift {
+  animation: drift 80s ease-in-out infinite alternate;
+}
+
+@keyframes drift {
+  from {
+    transform: translateX(-70px);
+  }
+  to {
+    transform: translateX(70px);
+  }
+}
+
+/* Cánh hoa đào rơi. */
+.petal {
+  opacity: 0;
+  animation: petal 17s linear infinite;
+}
+
+@keyframes petal {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+    opacity: 0;
+  }
+  8% {
+    opacity: 0.9;
+  }
+  80% {
+    opacity: 0.85;
+  }
+  100% {
+    transform: translate(-170px, 360px) rotate(280deg);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scene * {
+    animation: none !important;
+  }
+
+  .mote,
+  .petal {
+    display: none;
+  }
+}
