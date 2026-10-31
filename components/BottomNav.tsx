@@ -7,13 +7,14 @@ import { BOTTOM_NAV, isActive } from "@/lib/site";
 
 // Thanh lối tắt cố định ở đáy màn hình điện thoại và máy tính bảng (dưới 1024px), theo ảnh mẫu.
 // Nút giữa nổi tròn màu vàng dẫn tới Không gian lễ Phật. Màn hình rộng đã có menu trên thanh đầu nên ẩn thanh này.
+// Điện thoại xoay ngang cũng ẩn (app/globals.css), để thanh này không che tượng Phật.
 export function BottomNav() {
   const pathname = usePathname();
   return (
     <nav
       aria-label="Lối tắt"
       data-testid="bottom-nav"
-      className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-night/90 pb-[env(safe-area-inset-bottom)] backdrop-blur-md lg:hidden"
+      className="bottom-nav fixed inset-x-0 bottom-0 z-40 border-t border-line bg-night/90 pb-[env(safe-area-inset-bottom)] backdrop-blur-md lg:hidden"
     >
       <ul className="mx-auto grid h-[4.75rem] max-w-xl grid-cols-5 items-end">
         {BOTTOM_NAV.map((item) => {

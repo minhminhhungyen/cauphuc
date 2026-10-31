@@ -55,6 +55,17 @@
     }
   }
 
+  /* Điện thoại xoay ngang (màn hình thấp): thanh lối tắt sẽ che nửa dưới tượng Phật nên ẩn đi; menu vẫn ở thanh đầu. */
+  @media (max-width: 63.999rem) and (orientation: landscape) and (max-height: 31.25rem) {
+    body {
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    .bottom-nav {
+      display: none;
+    }
+  }
+
   h1,
   h2,
   h3 {

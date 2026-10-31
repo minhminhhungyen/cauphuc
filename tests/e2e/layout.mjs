@@ -5,7 +5,8 @@
 // - thanh đầu: 5 mục menu trên một hàng, không đè lên nút bên phải; nút "Thắp sáng tâm an" từ 1280px;
 // - trang chủ: tranh chính điện, 4 nút nghi thức nằm trong màn hình đầu; các khung không đè lên nhau;
 // - thượng tôn tượng Phật: tượng Phật và hào quang (data-sacred) nằm trọn trong tranh, không bị khung, nút,
-//   thông báo, bong bóng lời nguyện che; kiểm thêm ở 1366, 1536×864, 1920, 2560 và trang Không gian lễ Phật;
+//   thông báo, bong bóng lời nguyện, thanh lối tắt che; kiểm thêm ở điện thoại xoay ngang 844×390, 1366, 1536×864,
+//   1920, 2560 và trang Không gian lễ Phật;
 // - bấm nút: thắp hương, dâng hoa, lễ Phật, chọn lời nguyện, xóa lời nguyện; không gửi gì lên mạng;
 // - thanh lối tắt ở đáy (dưới 1024px) đủ 5 mục, không che chân trang;
 // - máy bật "giảm chuyển động" thì tranh đứng yên.
@@ -84,7 +85,7 @@ const sacredProblems = () => {
   // Mọi thứ đặt lên tranh (trừ chính tranh và dải nền mờ của thanh 4 nút), cộng các khung kính.
   const covers = [
     ...document.querySelectorAll('[data-testid="hero-scene"] > :not(.space-art):not(.dock-wrap)'),
-    ...document.querySelectorAll(".dock, .dock-note, .space-panel"),
+    ...document.querySelectorAll('.dock, .dock-note, .space-panel, [data-testid="bottom-nav"]'),
   ];
   for (const el of covers) {
     const r = shown(el);
@@ -279,6 +280,7 @@ try {
 
   // Thượng tôn tượng Phật ở thêm các khổ màn hình máy tính phổ biến, ở cả trang chủ và trang Không gian lễ Phật.
   const SACRED_EXTRA = [
+    { width: 844, height: 390 }, // điện thoại xoay ngang
     { width: 1366, height: 768 },
     { width: 1536, height: 864 },
     { width: 1920, height: 1080 },
@@ -293,6 +295,7 @@ try {
       const atRest = await page.evaluate(sacredProblems);
       await page.locator('[data-action="thap-huong"]').filter({ visible: true }).first().click();
       await page.locator('[data-action="le-phat"]').filter({ visible: true }).first().click();
+      await page.evaluate(() => window.scrollTo(0, 0));
       const afterActions = await page.evaluate(sacredProblems);
       const problems = [...new Set([...atRest, ...afterActions])];
       check(problems.length === 0, `[${name}] ${route}: tượng Phật trọn vẹn, không bị che (${problems.join("; ") || "ổn"})`);
@@ -301,6 +304,7 @@ try {
       await page.goto(url + "/", { waitUntil: "load" });
       await page.locator(`.panel-tr button[data-prayer="${PRAYERS[2].id}"]`).click();
       await page.locator('[data-testid="self-bubble"]').waitFor({ state: "visible", timeout: 2000 });
+      await page.evaluate(() => window.scrollTo(0, 0));
       const withBubble = await page.evaluate(sacredProblems);
       check(withBubble.length === 0, `[${name}] bong bóng lời nguyện không che tượng Phật (${withBubble.join("; ") || "ổn"})`);
       await page.screenshot({ path: `test-results/tuong-phat-${vp.width}x${vp.height}.png` });
